@@ -1,0 +1,274 @@
+
+
+Angular :
+
+1. ng new project --minimal
+2.ng server
+
+ ng generate component second --spec=false
+ng g c second --spec=false
+npm -install --save bootstrap
+
+npm install bootstrap --save 
+
+npm install jquery --save
+
+npm install popper.js --save
+
+angular.json - "node_modules/bootstrap/dist/css/bootstrap.min.css",
+
+For inline template :
+
+ng new [name] --inline-template
+
+For inline style:
+
+ng new [name] --inline-style
+
+ng generate module app-routing-module --module app --flat
+
+ng generate component componentName --module=app.module
+
+*******************************************************************************************************
+
+<form ngsubmit ="onsubmit(f)" #f> -->ElementRef
+
+<input ngmodel value="name">
+
+<form ngsubmit ="onsubmit(f)" #f="ngForm"> ---NgForm
+
+
+
+
+****************************************************************************************************
+
+
+
+Angular has components which are defined in typescript file using @component annottaion .
+
+  It has app name and template 
+
+@Component , @Service  - > Service is binded inside component using constructor or proprty injection. Service is used to invoke http with rest api .
+
+@Component  - We have onngInit . 
+
+@Ngmodule - Where we define the entries of all component and services so that angular can bootstrap it .
+
+****************************************************************************************************************************
+
+Component interaction :
+
+from parent to child -> @Input
+from child to parent -> @OutPut , EventEmitter
+**********************************************************************
+two way binding :
+<input type="" class ="" [(noModel)]=some property in ts>
+
+other wise we can provide local variable :
+
+<input type="" class ="" #someinputname> . This will be passed from view to model as HtmlInputType . e.g 
+
+<button (click) ="abc(someinputname)"> . In ts  : abc (someInput) {console.log(someInput.value))}
+          ******************************************
+Otherwise the second option is as below : 
+
+Usin @viewChild :
+
+<input type="" class ="" #someinputname> . This will be passed from view to model as HtmlInputType 
+
+<button (click) ="abc()"> 
+
+@ViewModel(someinputname)xyz : ElementRef
+
+abc(){
+ console.log(xyz.getElement.getNative.getValue)
+}
+
+          ********************************************************
+
+ ngcontent is also important
+
+
+
+
+******************************************************************************************************************************************
+
+Routing ,
+
+In app module we have to define const router .
+
+const router : Router =[{path:/ , component :HomeComponent},{path:user , component :UserComponent},{path:server, component :ServerComponent}];
+
+Now , in the modules , we have to register this const .
+
+Routemodule.root(router) .
+
+Now , in the app html :
+<div class="ontainer">
+<nav>
+
+<ul>
+
+<li routerLink='active' [routerLinkAtiveOptions]='{exact : true}'> ---- This is done to keep the Home nav selected only when / is there .
+<a routerLink="/" > Home </a>
+</li>
+
+<li routerLink='active'>
+<a routerLink="/user" >  </a>
+</li>
+
+<li routerLink='active'>
+<a routerLink="/server">  </a>
+</li>
+
+</ul>
+
+
+</nav>
+<div>
+<router-outlet></router-outlet>
+</div>
+
+</div>
+
+Now adding router link programaticly :
+
+hoe.html :
+
+<button (click) ="routeToServer()"> Servers </button>
+
+HomeComponent :
+
+@Component({
+
+name:
+templateUrl:
+styleurl: 
+})
+
+export class HomeComponent implements nginit{
+
+constructor(private router : Router);
+
+routeToServer(){
+//Do some logic here .
+
+this .route.navaigate({/server});
+
+}
+
+
+How to get the active route :
+
+Inject ActiveRoute inside constructor and use this.route.navigate([server],'relativeTo: this.route')
+
+
+Next scenario is passing the selected user for routing .
+
+Lets say in UserComponent :
+
+user:{id:number,name:string}
+
+constructor(route:ActiveRoute)
+
+ngonInit(){
+this.user={
+ id:this.route.snapshot.param['id']
+ name:this.route.snapshot.param['name']
+}
+}
+
+app.module.ts file ;
+
+cons appRouts;Routes=[
+{ path : 'users/:id:/:name' ,component:'userComponent'}
+
+]
+
+in User.html  we can read it with interpolation i.e. {{user.id}} {{user.name}}
+
+Next Scenario is :  When we have user.html  and want to route the user.id and user.name from a button .
+
+Here in this case , we are on the same component . So component will not be initialized . hence ngOnInit will be called only once .
+
+so , we have to write Oberseravles in this case .
+
+this.route.param.subscribe(
+  (params : Params) =>{
+    this.user.id=params['id'];
+    this.user.name=params['name];
+   }
+
+
+);
+
+<p> username is {{user.name}}</p>
+<p> userId is {{user.id}} </p>
+
+<div>
+<a [routerLink]='['/user',12,smith']'> SmithLink</a>
+<div>
+
+Now , next important thing is child routing  . In order to do child routing , we have to add <routerLink> in main page 
+
+and we have to add in app.module the child attributes .
+
+
+Passing parameters in Router : 
+
+1. Passing parameters using RouterLink directive
+2. retrieving Parameters using ActivedRouteService.Parameters are retrieved either by snapshot or subscribe.
+3.snapshot has paramMap and there is get . this.id=this._Activatedroute.snapshot.paramMap.get("id");
+4 .this._Activatedroute.paramMap.subscribe(params => { 
+    this.id = params.get('id'); 
+});
+
+
+
+
+******************************************************PIPE******************************************************************************
+
+Pipes ;
+
+<p>{{username|upperccase}}
+
+
+*****************************************************HTTP**********************************************
+
+http ;
+
+This http is coming from HTTpClient (angular/coomon/httpclient) .
+
+this.http.post(url, data).subscribe(responsedata=>{console.log(responsedata)});
+this.http.get(url).subscribe(responseData=>{console.log(responsedata)});
+
+Now for fetch , we need funneling (translation) .
+
+this.http . get (url).pipe(responsedata=>{
+ 
+  let data=[];
+  for(cons key in responsedata){
+   data.push(responsedata[key]);
+  }
+
+ return data;
+
+} ).subscribe(data =>{console.log(data)});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
